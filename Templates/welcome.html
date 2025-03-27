@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Insight Matrix - Automatic Sales Analysis</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00BFFF;
+            --secondary-color: #1E90FF;
+            --accent-color: #87CEFA;
+            --text-color: #FFFFFF;
+            --bg-color: #000C1F;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/business-candle-stick-graph-chart-600nw-2169971673-38V7q5NAppD5mtLyb1HPhMFZz6mzGI.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .welcome-container {
+            background: rgba(0, 12, 31, 0.6);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+        }
+        .logo {
+            font-size: 4.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(0, 191, 255, 0.8),
+                             0 0 30px rgba(0, 191, 255, 0.6);
+            }
+        }
+        h1 {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .feature-item {
+            background: rgba(0, 191, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        .feature-item:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 191, 255, 0.2);
+        }
+        .feature-item i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        .feature-item h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .feature-item p {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .cta-button {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .cta-button:hover {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h1>Insight Matrix</h1>
+        <div class="subtitle">Automatic Sales Analysis</div>
+        
+        <div class="feature-grid">
+            <div class="feature-item">
+                <i class="fas fa-robot"></i>
+                <h3>Automated Analysis</h3>
+                <p>Instant insights from your sales data with advanced automation</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-chart-pie"></i>
+                <h3>Visual Reports</h3>
+                <p>Beautiful, interactive charts and comprehensive visualizations</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bolt"></i>
+                <h3>Real-time Updates</h3>
+                <p>Live data processing and instant analytical feedback</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-balance-scale"></i>
+                <h3>Comparison</h3>
+                <p>Compare data from multiple time periods or datasets</p>
+            </div>
+        </div>
+
+        <a href="/upload" class="cta-button">
+            <i class="fas fa-rocket me-2"></i>
+            Get Started
+        </a>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+
