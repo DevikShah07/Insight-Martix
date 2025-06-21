@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insight Matrix - Sales Comparison Results</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #00BFFF;
+            --secondary-color: #1E90FF;
+            --accent-color: #87CEFA;
+            --text-color: #FFFFFF;
+            --bg-color: #000C1F;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/business-candle-stick-graph-chart-600nw-2169971673-wC1SDnSXrHsbUJkoOAQ8xAYnJJpzvc.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(0, 12, 31, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+        .logo {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        .card {
+            background: rgba(0, 12, 31, 0.6);
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid var(--secondary-color);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            font-weight: bold;
+            border: none;
+        }
+        .card-body {
+            color: var(--text-color);
+        }
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+        h2, h5 {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-balance-scale logo"></i>Insight Matrix Comparison Results</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-dollar-sign metric-icon"></i>
+                        <h5 class="card-title">Total Revenue (File 1)</h5>
+                        <h2>${{ '%0.2f'| format(total_revenue1|float) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-dollar-sign metric-icon"></i>
+                        <h5 class="card-title">Total Revenue (File 2)</h5>
+                        <h2>${{ '%0.2f'| format(total_revenue2|float) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line me-2"></i>Total Revenue Comparison
+                    </div>
+                    <div class="card-body">
+                        <canvas id="revenueComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-trophy me-2"></i>Top Products Comparison
+                    </div>
+                    <div class="card-body">
+                        <canvas id="productsComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <a href="/upload" class="btn btn-primary btn-lg btn-block">
+                    <i class="fas fa-redo me-2"></i>Analyze Another File
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        // Revenue Comparison Chart
+        var revenueComparisonCtx = document.getElementById('revenueComparisonChart').getContext('2d');
+        var revenueComparisonChart = new Chart(revenueComparisonCtx, {
+            type: 'bar',
+            data: {
+                labels: ['File 1', 'File 2'],
+                datasets: [{
+                    label: 'Total Revenue',
+                    data: [{{ total_revenue1 }}, {{ total_revenue2 }}],
+                    backgroundColor: ['rgba(0, 191, 255, 0.8)', 'rgba(30, 144, 255, 0.8)'],
+                    borderColor: ['#00BFFF', '#1E90FF'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Total Revenue Comparison',
+                        color: '#FFFFFF'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Products Comparison Chart
+        var productsComparisonCtx = document.getElementById('productsComparisonChart').getContext('2d');
+        var productsComparisonChart = new Chart(productsComparisonCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ products_comparison_data | safe }}.map(item => item.product),
+                datasets: [{
+                    label: 'File 1',
+                    data: {{ products_comparison_data | safe }}.map(item => item.revenue1),
+                    backgroundColor: 'rgba(0, 191, 255, 0.8)',
+                    borderColor: '#00BFFF',
+                    borderWidth: 1
+                },
+                {
+                    label: 'File 2',
+                    data: {{ products_comparison_data | safe }}.map(item => item.revenue2),
+                    backgroundColor: 'rgba(30, 144, 255, 0.8)',
+                    borderColor: '#1E90FF',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Top Products Comparison',
+                        color: '#FFFFFF'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insight Matrix - Sales Analysis Results</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #00BFFF;
+            --secondary-color: #1E90FF;
+            --accent-color: #87CEFA;
+            --text-color: #FFFFFF;
+            --bg-color: #000C1F;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/business-candle-stick-graph-chart-600nw-2169971673-wC1SDnSXrHsbUJkoOAQ8xAYnJJpzvc.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(0, 12, 31, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+        .logo {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        .card {
+            background: rgba(0, 12, 31, 0.6);
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid var(--secondary-color);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            font-weight: bold;
+            border: none;
+        }
+        .card-body {
+            color: var(--text-color);
+        }
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+        h2, h5 {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-chart-line logo"></i>Insight Matrix Analysis Results</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-dollar-sign metric-icon"></i>
+                        <h5 class="card-title">Total Revenue</h5>
+                        <h2>${{ '%0.2f'| format(total_revenue|float) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-shopping-cart metric-icon"></i>
+                        <h5 class="card-title">Average Order Value</h5>
+                        <h2>${{ '%0.2f'| format(average_order_value|float) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-tags metric-icon"></i>
+                        <h5 class="card-title">Product Categories</h5>
+                        <h2>{{ product_categories }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line me-2"></i>Monthly Revenue Trends
+                    </div>
+                    <div class="card-body">
+                        <canvas id="monthlyTrendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-trophy me-2"></i>Top 5 Best Performing Products
+                    </div>
+                    <div class="card-body">
+                        <canvas id="topProductsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area me-2"></i>Revenue Distribution
+                    </div>
+                    <div class="card-body">
+                        <img src="data:image/png;base64,{{ revenue_dist_img }}" alt="Revenue Distribution" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="/upload" class="btn btn-primary btn-lg btn-block">
+                    <i class="fas fa-redo me-2"></i>Analyze Another File
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="/comparison" class="btn btn-primary btn-lg btn-block">
+                    <i class="fas fa-balance-scale me-2"></i>Compare with Another File
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        // Monthly Trends Chart
+        var monthlyTrendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+        var monthlyTrendsChart = new Chart(monthlyTrendsCtx, {
+            type: 'line',
+            data: {
+                labels: {{ monthly_trends_data | safe }}.map(item => item.month),
+                datasets: [{
+                    label: 'Monthly Revenue',
+                    data: {{ monthly_trends_data | safe }}.map(item => item.revenue),
+                    borderColor: '#00BFFF',
+                    backgroundColor: 'rgba(0, 191, 255, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly Revenue Trends',
+                        color: '#FFFFFF'
+                    }
+                }
+            }
+        });
+
+        // Top Products Chart
+        var topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
+        var topProductsChart = new Chart(topProductsCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ best_products_data | safe }}.map(item => item.product),
+                datasets: [{
+                    label: 'Revenue',
+                    data: {{ best_products_data | safe }}.map(item => item.revenue),
+                    backgroundColor: [
+                        'rgba(0, 191, 255, 0.8)',
+                        'rgba(30, 144, 255, 0.8)',
+                        'rgba(135, 206, 250, 0.8)',
+                        'rgba(0, 150, 255, 0.8)',
+                        'rgba(100, 149, 237, 0.8)'
+                    ],
+                    borderColor: [
+                        '#00BFFF',
+                        '#1E90FF',
+                        '#87CEFA',
+                        '#0096FF',
+                        '#6495ED'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Top 5 Best Performing Products',
+                        color: '#FFFFFF'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
